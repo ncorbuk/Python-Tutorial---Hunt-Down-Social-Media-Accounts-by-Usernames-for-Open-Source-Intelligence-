@@ -1,4 +1,4 @@
-# Python Tutorial - || Hunt Down Social Media Accounts by Usernames for Open-Source Intelligence ||
+# Python Tutorial - || Hunt Down Social Media Accounts by Usernames for Open-Source Intelligence || Looking-Glass v1.0
 
 This tool is a Python OSINT (Open-Source Intelligence Tool) for finding information on people that you do not know, but have only a social media/site username of the target.
 
