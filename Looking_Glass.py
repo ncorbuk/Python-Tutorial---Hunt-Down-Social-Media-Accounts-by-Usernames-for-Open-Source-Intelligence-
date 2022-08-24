@@ -4,6 +4,7 @@
 '''imports'''
 import requests
 import time
+import threading
 
 ''' INPUT USERNMAE TO DOX '''
 username = input('\033[92m{+} Enter username to DOX: ')
@@ -300,20 +301,37 @@ def search():
     time.sleep(1)
 
     count = 0
-    match = True
-    for url in WEBSITES:
-        r = requests.get(url)
+    threads = []
+    results = [False for i in range(len(WEBSITES))]
+    for i in range(len(WEBSITES)):
+        url = WEBSITES[i]
+        def thread(results, index, url):
+            try:
+                r = requests.get(url, timeout=10)
 
-        if r.status_code == 200:
-            if match == True:
-                GREEN('[+] FOUND MATCHES')
-                match = False
-            YELLOW(f'\n{url} - {r.status_code} - OK')
-            if username in r.text:
-                GREEN(f'POSITIVE MATCH: Username:{username} - text has been detected in url.')
-            else:
-                GREEN(f'POSITIVE MATCH: Username:{username} - \033[91mtext has NOT been detected in url, could be a FALSE POSITIVE.')#
-        count += 1
+                if r.status_code == 200:
+                    YELLOW(f'\n{url} - {r.status_code} - OK')
+                    if username.lower() in r.text.lower():
+                        GREEN(f'POSITIVE MATCH: Username:{username} - text has been detected in url.')
+                    else:
+                        GREEN(f'POSITIVE MATCH: Username:{username} - \033[91mtext has NOT been detected in url, could be a FALSE POSITIVE.')#
+                    results[index] = True
+            except requests.exceptions.ConnectTimeout:
+                RED(f'{url} - Connection Timeout')
+            except Exception as e:
+                RED(f'ERROR checking {url} - {e}')
+            
+        t = threading.Thread(target=thread, args=(results, i, url))
+        t.start()
+        threads.append(t)
+
+    for thread in threads:
+        thread.join()
+    
+    for i in range(len(results)):
+        if results[i]:
+            count += 1
+    
 
     total = len(WEBSITES)
     GREEN(f'FINISHED: A total of {count} MATCHES found out of {total} websites.')
