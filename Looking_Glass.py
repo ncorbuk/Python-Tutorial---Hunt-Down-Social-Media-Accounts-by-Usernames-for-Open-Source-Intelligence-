@@ -309,15 +309,12 @@ def search():
             try:
                 r = requests.get(url, timeout=10)
 
-        if r.status_code == 200:
-            if match == True:
-                GREEN('[+] FOUND MATCHES')
-                match = False
-            YELLOW(f'\n{url} - {r.status_code} - OK')
-            if username in r.text:
-                GREEN(f'POSITIVE MATCH: Username:{username} - text has been detected in url.')
-            else:
-                GREEN(f'POSITIVE MATCH: Username:{username} - \033[91mtext has NOT been detected in url, could be a FALSE POSITIVE.')#
+                if r.status_code == 200:
+                    YELLOW(f'\n{url} - {r.status_code} - OK')
+                    if username in r.text:
+                        GREEN(f'POSITIVE MATCH: Username:{username} - text has been detected in url.')
+                    else:
+                        GREEN(f'POSITIVE MATCH: Username:{username} - \033[91mtext has NOT been detected in url, could be a FALSE POSITIVE.')#
                     results[index] = True
             except requests.exceptions.ConnectTimeout:
                 RED(f'{url} - Connection Timeout')
