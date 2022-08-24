@@ -311,7 +311,7 @@ def search():
 
                 if r.status_code == 200:
                     YELLOW(f'\n{url} - {r.status_code} - OK')
-                    if username in r.text:
+                    if username.lower() in r.text.lower():
                         GREEN(f'POSITIVE MATCH: Username:{username} - text has been detected in url.')
                     else:
                         GREEN(f'POSITIVE MATCH: Username:{username} - \033[91mtext has NOT been detected in url, could be a FALSE POSITIVE.')#
